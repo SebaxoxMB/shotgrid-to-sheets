@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from .lib import six
 from .lib import sgsix
 from .lib import sgutils
-from .lib.six import BytesIO  # used for attachment upload
+from six import BytesIO  # used for attachment upload
 from six.moves import map
 
 from six.moves import http_cookiejar  # used for attachment upload
@@ -48,15 +48,15 @@ import stat  # used for attachment upload
 import sys
 import time
 import json
-from .lib.six.moves import urllib
+from six.moves import urllib
 import shutil  # used for attachment download
-from .lib.six.moves import http_client  # Used for secure file upload.
+from six.moves import http_client  # Used for secure file upload.
 from .lib.httplib2 import Http, ProxyInfo, socks, ssl_error_classes
 from .lib.sgtimezone import SgTimezone
 
 # Import Error and ResponseError (even though they're unused in this file) since they need
 # to be exposed as part of the API.
-from .lib.six.moves.xmlrpc_client import Error, ProtocolError, ResponseError  # noqa
+from six.moves.xmlrpc_client import Error, ProtocolError, ResponseError  # noqa
 
 if six.PY3:
     from base64 import encodebytes as base64encode
