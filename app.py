@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from shotgun_api3 import Shotgun
+from python_api.shotgun import Shotgun
 from flask_cors import CORS
 
 app = Flask(__name__)
