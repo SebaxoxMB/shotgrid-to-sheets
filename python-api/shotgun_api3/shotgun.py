@@ -36,7 +36,7 @@ from .lib import sgutils
 from .lib.six import BytesIO  # used for attachment upload
 from six.moves import map
 
-from .lib.six.moves import http_cookiejar  # used for attachment upload
+from six.moves import http_cookiejar  # used for attachment upload
 import datetime
 import logging
 import uuid  # used for attachment upload
