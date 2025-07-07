@@ -1,4 +1,4 @@
 Flask
 flask-cors
 gunicorn
-git+https://github.com/shotgunsoftware/python-api.git@v3.0.15
+-e ./python-api
