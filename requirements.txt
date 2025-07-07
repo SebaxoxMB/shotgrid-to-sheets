@@ -2,4 +2,4 @@ Flask
 flask-cors
 gunicorn
 six
-git+https://github.com/shotgunsoftware/python-api.git
+git+https://github.com/shotgunsoftware/python-api.git#egg=shotgun_api3
