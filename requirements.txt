@@ -2,3 +2,4 @@ Flask
 flask-cors
 shotgun_api3
 gunicorn
+six
