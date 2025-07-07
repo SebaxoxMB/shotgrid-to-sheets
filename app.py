@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "python-api"))
+
 from flask import Flask, request, jsonify
 from shotgun_api3.shotgun import Shotgun
 from flask_cors import CORS
