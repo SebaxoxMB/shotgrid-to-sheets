@@ -1,3 +1,4 @@
 Flask
-shotgun_api3
 flask-cors
+shotgun_api3
+gunicorn
