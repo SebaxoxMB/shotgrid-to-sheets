@@ -1,5 +1,5 @@
 Flask
 flask-cors
-shotgun_api3==3.1.0
 gunicorn
 six
+shotgun_api3==3.1.0
