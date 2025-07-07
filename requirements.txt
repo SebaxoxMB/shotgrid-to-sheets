@@ -1,5 +1,4 @@
 Flask
 flask-cors
 gunicorn
-six
 shotgun_api3==3.8.4
