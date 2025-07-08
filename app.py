@@ -11,25 +11,32 @@ CORS(app)  # Para que Google Sheets pueda hacer peticiones
 
 @app.route("/shotgrid_estado", methods=["POST"])
 def shotgrid_estado():
-    data = request.get_json()
-    shot_ids = data.get("shot_ids", [])
-    script_name = data["script_name"]
-    script_key = data["script_key"]
+    try:
+        data = request.get_json()
+        print("📥 JSON recibido:", data)  # <-- VERIFICAR qué llega
 
-    sg = Shotgun(
-        "https://garagevfx.shotgrid.autodesk.com",
-        script_name,
-        script_key
-    )
+        shot_codes = data.get("shot_codes", [])
+        script_name = data["script_name"]
+        script_key = data["script_key"]
 
-    filtros = [['id', 'in', shot_ids]]
-    campos = ['id', 'code', 'sg_status_list']
-    shots = sg.find("Shot", filtros, campos)
+        print("✅ Script name:", script_name)
+        print("✅ Shot codes:", shot_codes)
 
-    resultado = {
-        str(shot['id']): {
-            "code": shot["code"],
-            "estado": shot["sg_status_list"]
-        } for shot in shots
-    }
-    return jsonify(resultado)
+        sg = Shotgun(
+            "https://garagevfx.shotgrid.autodesk.com",
+            script_name,
+            script_key
+        )
+
+        filtros = [['code', 'in', shot_codes]]
+        campos = ['code', 'sg_status_list']
+        shots = sg.find("Shot", filtros, campos)
+
+        print("🔍 Resultados:", shots)
+
+        resultado = {shot['code']: shot['sg_status_list'] for shot in shots}
+        return jsonify(resultado)
+
+    except Exception as e:
+        print("❌ Error en el servidor:", str(e))
+        return jsonify({"error": str(e)}), 500
