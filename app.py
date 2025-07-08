@@ -26,7 +26,6 @@ def shotgrid_estado():
         filtros = [['code', 'in', shot_codes]]
         campos = ['code', 'sg_status_list']
 
-        # También incluimos los tasks relacionados
         shots = sg.find("Shot", filtros, campos)
 
         resultado = {}
@@ -37,20 +36,29 @@ def shotgrid_estado():
                 "shot_status": shot.get('sg_status_list', '')
             }
 
-            # Buscar tasks relacionados a ese shot
-            task_filters = [['entity', 'is', {'type': 'Shot', 'id': shot['id']}]]  # ← ¡esto es importante!
-            task_fields = ['step.Step.short_name', 'sg_status_list']
+            # ← Buscar tasks asociados
+            task_filters = [['entity', 'is', {'type': 'Shot', 'id': shot["id"]}]]
+            task_fields = ['step.Step.short_name', 'sg_status_list', 'start_date', 'due_date', 'task_assignees']
 
             tasks = sg.find("Task", task_filters, task_fields)
 
             task_statuses = {}
             for task in tasks:
                 step = task.get('step.Step.short_name')
-                status = task.get('sg_status_list')
-                if step and status:
-                    task_statuses[step] = status
+                if step == "CMP":
+                    task_statuses["task_status"] = task.get("sg_status_list")
+                    
+                    # Obtener nombre corto del primer asignado
+                    asignado = ""
+                    if task.get("task_assignees"):
+                        nombre = task["task_assignees"][0]["name"]
+                        asignado = nombre.split()[0]
 
-            resultado[code]["task_status"] = task_statuses
+                    task_statuses["assigned_to"] = asignado
+                    task_statuses["start_date"] = task.get("start_date")
+                    task_statuses["due_date"] = task.get("due_date")
+
+            resultado[code]["task_comp"] = task_statuses
 
         return jsonify(resultado)
 
