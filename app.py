@@ -34,12 +34,12 @@ def shotgrid_estado():
             code = shot['code']
             resultado[code] = {
                 "shot_status": shot.get('sg_status_list', ''),
-                "cut_duration": shot.get('cut_duration'),
-                "cut_in": shot.get('cut_in'),
-                "cut_out": shot.get('cut_out')
+                "cut_duration": shot.get('cut_duration', ''),
+                "cut_in": shot.get('cut_in', ''),
+                "cut_out": shot.get('cut_out', '')
             }
 
-            # ← Buscar tasks asociados al shot
+            # Buscar task COMP asociada
             task_filters = [['entity', 'is', {'type': 'Shot', 'id': shot["id"]}]]
             task_fields = ['step.Step.short_name', 'sg_status_list', 'start_date', 'due_date', 'task_assignees']
 
@@ -50,7 +50,7 @@ def shotgrid_estado():
                 step = task.get('step.Step.short_name')
                 if step == "CMP":
                     task_statuses["task_status"] = task.get("sg_status_list")
-
+                    
                     asignado = ""
                     if task.get("task_assignees"):
                         nombre = task["task_assignees"][0]["name"]
