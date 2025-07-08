@@ -24,7 +24,7 @@ def shotgrid_estado():
         )
 
         filtros = [['code', 'in', shot_codes]]
-        campos = ['code', 'sg_status_list']
+        campos = ['code', 'sg_status_list', 'cut_duration', 'cut_in', 'cut_out']
 
         shots = sg.find("Shot", filtros, campos)
 
@@ -33,10 +33,13 @@ def shotgrid_estado():
         for shot in shots:
             code = shot['code']
             resultado[code] = {
-                "shot_status": shot.get('sg_status_list', '')
+                "shot_status": shot.get('sg_status_list', ''),
+                "cut_duration": shot.get('cut_duration'),
+                "cut_in": shot.get('cut_in'),
+                "cut_out": shot.get('cut_out')
             }
 
-            # ← Buscar tasks asociados
+            # ← Buscar tasks asociados al shot
             task_filters = [['entity', 'is', {'type': 'Shot', 'id': shot["id"]}]]
             task_fields = ['step.Step.short_name', 'sg_status_list', 'start_date', 'due_date', 'task_assignees']
 
@@ -47,8 +50,7 @@ def shotgrid_estado():
                 step = task.get('step.Step.short_name')
                 if step == "CMP":
                     task_statuses["task_status"] = task.get("sg_status_list")
-                    
-                    # Obtener nombre corto del primer asignado
+
                     asignado = ""
                     if task.get("task_assignees"):
                         nombre = task["task_assignees"][0]["name"]
