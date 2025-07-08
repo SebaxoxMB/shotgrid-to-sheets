@@ -13,14 +13,9 @@ CORS(app)  # Para que Google Sheets pueda hacer peticiones
 def shotgrid_estado():
     try:
         data = request.get_json()
-        print("📥 JSON recibido:", data)  # <-- VERIFICAR qué llega
-
         shot_codes = data.get("shot_codes", [])
         script_name = data["script_name"]
         script_key = data["script_key"]
-
-        print("✅ Script name:", script_name)
-        print("✅ Shot codes:", shot_codes)
 
         sg = Shotgun(
             "https://garagevfx.shotgrid.autodesk.com",
@@ -32,9 +27,28 @@ def shotgrid_estado():
         campos = ['code', 'sg_status_list']
         shots = sg.find("Shot", filtros, campos)
 
-        print("🔍 Resultados:", shots)
+        resultado = {}
 
-        resultado = {shot['code']: shot['sg_status_list'] for shot in shots}
+        for shot in shots:
+            code = shot['code']
+            resultado[code] = {
+                "shot_status": shot.get('sg_status_list', '')
+            }
+
+            # Buscar tasks relacionados a ese shot
+            task_filters = [['entity', 'is', {'type': 'Shot', 'code': code}]]
+            task_fields = ['step.Step.short_name', 'sg_status_list']
+            tasks = sg.find("Task", task_filters, task_fields)
+
+            task_statuses = {}
+            for task in tasks:
+                step = task.get('step.Step.short_name')
+                status = task.get('sg_status_list')
+                if step and status:
+                    task_statuses[step] = status
+
+            resultado[code]["task_status"] = task_statuses
+
         return jsonify(resultado)
 
     except Exception as e:
